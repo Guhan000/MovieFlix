@@ -572,8 +572,8 @@ const MovieDashboard = () => {
 
         {/* Movie Detail Modal */}
         {selectedMovie && (
-          <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-            <div className="glass-card max-w-6xl w-full max-h-[95vh] overflow-y-auto border-0">
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-primary border border-primary/20 backdrop-blur-xl max-w-6xl w-full max-h-[95vh] overflow-y-auto rounded-2xl shadow-2xl">
               <div className="p-8">
                 <div className="flex justify-between items-start mb-8">
                   <div>
@@ -592,7 +592,7 @@ const MovieDashboard = () => {
                 
                 <div className="grid md:grid-cols-3 gap-8">
                   <div className="md:col-span-1">
-                    <div className="glass-card h-96 flex items-center justify-center rounded-xl overflow-hidden border-0">
+                    <div className="bg-secondary border border-primary/10 h-96 flex items-center justify-center rounded-xl overflow-hidden shadow-md">
                       {selectedMovie.poster && selectedMovie.poster !== 'N/A' ? (
                         <img 
                           src={selectedMovie.poster} 
@@ -612,7 +612,7 @@ const MovieDashboard = () => {
                         href={`https://www.imdb.com/title/${selectedMovie.imdbID}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="glass-card p-4 rounded-xl border-0 hover:scale-105 transition-all duration-300 flex items-center space-x-3"
+                        className="bg-secondary border border-primary/10 p-4 rounded-xl hover:scale-105 transition-all duration-300 flex items-center space-x-3 shadow-sm"
                       >
                         <div className="w-10 h-10 bg-yellow-600 rounded-lg flex items-center justify-center text-white font-bold">
                           i
@@ -627,7 +627,7 @@ const MovieDashboard = () => {
                         href={`https://www.netflix.com/search?q=${encodeURIComponent(selectedMovie.title)}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="glass-card p-4 rounded-xl border-0 hover:scale-105 transition-all duration-300 flex items-center space-x-3"
+                        className="bg-secondary border border-primary/10 p-4 rounded-xl hover:scale-105 transition-all duration-300 flex items-center space-x-3 shadow-sm"
                       >
                         <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center text-white font-bold">
                           N
@@ -671,13 +671,13 @@ const MovieDashboard = () => {
                   </div>
                   
                   <div className="md:col-span-2 space-y-8">
-                    <div className="glass-card p-6 border-0 rounded-xl">
+                    <div className="bg-secondary border border-primary/10 p-6 rounded-xl shadow-sm">
                       <h3 className="font-bold text-primary mb-4 text-xl">📝 Plot Summary</h3>
                       <p className="text-secondary leading-relaxed text-lg">{selectedMovie.plot}</p>
                     </div>
                     
                     <div className="grid md:grid-cols-2 gap-6">
-                      <div className="glass-card p-6 border-0 rounded-xl">
+                      <div className="bg-secondary border border-primary/10 p-6 rounded-xl shadow-sm">
                         <h3 className="font-bold text-primary mb-4 text-lg">ℹ️ Movie Details</h3>
                         <div className="space-y-4">
                           <div className="flex justify-between items-center py-2 border-b border-tertiary">
@@ -707,10 +707,10 @@ const MovieDashboard = () => {
                         </div>
                       </div>
                       
-                      <div className="glass-card p-6 border-0 rounded-xl">
+                      <div className="bg-secondary border border-primary/10 p-6 rounded-xl shadow-sm">
                         <h3 className="font-bold text-primary mb-4 text-lg">⭐ Ratings & Reviews</h3>
                         <div className="space-y-4">
-                          <div className="glass-card p-4 border-0 flex items-center justify-between bg-gradient-primary/10">
+                          <div className="bg-tertiary border border-primary/10 p-4 rounded-lg flex items-center justify-between shadow-sm">
                             <div className="flex items-center space-x-2">
                               <span className="text-yellow-400 text-lg">⭐</span>
                               <span className="font-semibold text-primary">IMDb Rating</span>
@@ -721,7 +721,7 @@ const MovieDashboard = () => {
                           </div>
                           
                           {selectedMovie.ratings?.map((rating, index) => (
-                            <div key={index} className="flex items-center justify-between glass-card p-3 border-0">
+                            <div key={index} className="flex items-center justify-between bg-tertiary border border-primary/10 p-3 rounded-lg shadow-sm">
                               <span className="text-muted font-medium">{rating.source}</span>
                               <span className="font-semibold text-primary">{rating.value}</span>
                             </div>
@@ -743,7 +743,7 @@ const MovieDashboard = () => {
                       </div>
                     </div>
                     
-                    <div className="glass-card p-6 border-0 rounded-xl">
+                    <div className="bg-secondary border border-primary/10 p-6 rounded-xl shadow-sm">
                       <h3 className="font-bold text-primary mb-4 text-lg">🎭 Genres</h3>
                       <div className="flex flex-wrap gap-3">
                         {selectedMovie.genre?.map((g) => (
@@ -754,7 +754,7 @@ const MovieDashboard = () => {
                       </div>
                     </div>
                     
-                    <div className="glass-card p-6 border-0 rounded-xl">
+                    <div className="bg-secondary border border-primary/10 p-6 rounded-xl shadow-sm">
                       <h3 className="font-bold text-primary mb-4 text-lg">🎬 Cast & Crew</h3>
                       <div className="space-y-4">
                         <div className="border-b border-tertiary pb-3">

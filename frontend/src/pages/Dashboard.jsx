@@ -22,6 +22,7 @@ const Dashboard = () => {
     totalFavorites: 0,
     avgRating: 0
   });
+  const [selectedMovie, setSelectedMovie] = useState(null);
 
   useEffect(() => {
     loadDashboardData();
@@ -67,6 +68,15 @@ const Dashboard = () => {
   const handleLogout = () => {
     logout();
     navigate('/');
+  };
+
+  const getMovieDetails = async (imdbID) => {
+    try {
+      const response = await api.get(`/movies/${imdbID}`);
+      setSelectedMovie(response.data.movie);
+    } catch (error) {
+      toast.error('Failed to load movie details');
+    }
   };
 
   return (
@@ -179,6 +189,7 @@ const Dashboard = () => {
                 <div 
                   key={movie.imdbID} 
                   className="group glass-card rounded-xl overflow-hidden hover:scale-105 hover:shadow-2xl cursor-pointer relative border-0 transition-all transform duration-300"
+                  onClick={() => getMovieDetails(movie.imdbID)}
                 >
                   {/* Heart Icon */}
                   <div className="absolute top-3 left-3 z-10">
@@ -269,6 +280,7 @@ const Dashboard = () => {
               <div 
                 key={movie.imdbID} 
                 className="group glass-card rounded-xl overflow-hidden hover:scale-105 hover:shadow-xl cursor-pointer relative border-0 transition-all transform duration-300"
+                onClick={() => getMovieDetails(movie.imdbID)}
               >
                 {/* Heart Icon */}
                 <div className="absolute top-3 left-3 z-10">
@@ -353,6 +365,7 @@ const Dashboard = () => {
               <div 
                 key={movie.imdbID} 
                 className="group glass-card rounded-xl overflow-hidden hover:scale-105 hover:shadow-2xl cursor-pointer relative border-0 transition-all transform duration-300"
+                onClick={() => getMovieDetails(movie.imdbID)}
               >
                 {/* Ranking Badge */}
                 <div className="absolute top-3 left-3 z-10 bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold">
@@ -557,6 +570,159 @@ const Dashboard = () => {
               <p className="text-secondary text-sm mt-2">Preparing your personalized movie experience</p>
             </div>
           </section>
+        )}
+
+        {/* Movie Detail Modal */}
+        {selectedMovie && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-primary border border-primary/20 backdrop-blur-xl max-w-5xl w-full max-h-[95vh] overflow-y-auto rounded-2xl shadow-2xl">
+              <div className="p-8">
+                <div className="flex justify-between items-start mb-8">
+                  <div>
+                    <h2 className="text-4xl font-bold text-primary mb-2">{selectedMovie.title}</h2>
+                    <p className="text-secondary text-lg">
+                      {selectedMovie.year} • {selectedMovie.runtime} • {selectedMovie.language}
+                    </p>
+                  </div>
+                  <button 
+                    onClick={() => setSelectedMovie(null)}
+                    className="btn-ghost p-3 text-2xl hover:scale-110 transition-all duration-200"
+                  >
+                    ✕
+                  </button>
+                </div>
+                
+                <div className="grid md:grid-cols-3 gap-8">
+                  <div className="md:col-span-1">
+                    <div className="bg-secondary border border-primary/10 h-96 flex items-center justify-center rounded-xl overflow-hidden shadow-md">
+                      {selectedMovie.poster && selectedMovie.poster !== 'N/A' ? (
+                        <img 
+                          src={selectedMovie.poster} 
+                          alt={selectedMovie.title}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="text-8xl text-muted">🎬</div>
+                      )}
+                    </div>
+                    
+                    {/* External Links */}
+                    <div className="mt-8 space-y-4">
+                      <h3 className="font-bold text-primary text-lg mb-4">🔗 External Links</h3>
+                      
+                      <a 
+                        href={`https://www.imdb.com/title/${selectedMovie.imdbID}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-secondary border border-primary/10 p-4 rounded-xl hover:scale-105 transition-all duration-300 flex items-center space-x-3 shadow-sm"
+                      >
+                        <div className="w-10 h-10 bg-yellow-600 rounded-lg flex items-center justify-center text-white font-bold">
+                          i
+                        </div>
+                        <div>
+                          <div className="font-bold text-yellow-400">IMDb</div>
+                          <div className="text-xs text-yellow-500">View on IMDb</div>
+                        </div>
+                      </a>
+                      
+                      <a 
+                        href={`https://www.netflix.com/search?q=${encodeURIComponent(selectedMovie.title)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-secondary border border-primary/10 p-4 rounded-xl hover:scale-105 transition-all duration-300 flex items-center space-x-3 shadow-sm"
+                      >
+                        <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center text-white font-bold">
+                          N
+                        </div>
+                        <div>
+                          <div className="font-bold text-red-400">Netflix</div>
+                          <div className="text-xs text-red-500">Search on Netflix</div>
+                        </div>
+                      </a>
+                    </div>
+                  </div>
+                  
+                  <div className="md:col-span-2 space-y-8">
+                    <div className="bg-secondary border border-primary/10 p-6 rounded-xl shadow-sm">
+                      <h3 className="font-bold text-primary mb-4 text-xl">📝 Plot Summary</h3>
+                      <p className="text-secondary leading-relaxed text-lg">{selectedMovie.plot}</p>
+                    </div>
+                    
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="bg-secondary border border-primary/10 p-6 rounded-xl shadow-sm">
+                        <h3 className="font-bold text-primary mb-4 text-lg">ℹ️ Movie Details</h3>
+                        <div className="space-y-4">
+                          <div className="flex justify-between items-center py-2 border-b border-tertiary">
+                            <span className="text-muted font-medium">Year:</span> 
+                            <span className="font-semibold text-primary">{selectedMovie.year}</span>
+                          </div>
+                          <div className="flex justify-between items-center py-2 border-b border-tertiary">
+                            <span className="text-muted font-medium">Runtime:</span> 
+                            <span className="font-semibold text-primary">{selectedMovie.runtime}</span>
+                          </div>
+                          <div className="flex justify-between items-center py-2 border-b border-tertiary">
+                            <span className="text-muted font-medium">Director:</span> 
+                            <span className="font-semibold text-primary">{selectedMovie.director}</span>
+                          </div>
+                          <div className="flex justify-between items-center py-2">
+                            <span className="text-muted font-medium">Language:</span> 
+                            <span className="font-medium text-secondary">{selectedMovie.language}</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="bg-secondary border border-primary/10 p-6 rounded-xl shadow-sm">
+                        <h3 className="font-bold text-primary mb-4 text-lg">⭐ Ratings & Reviews</h3>
+                        <div className="space-y-4">
+                          <div className="bg-tertiary border border-primary/10 p-4 rounded-lg flex items-center justify-between shadow-sm">
+                            <div className="flex items-center space-x-2">
+                              <span className="text-yellow-400 text-lg">⭐</span>
+                              <span className="font-semibold text-primary">IMDb Rating</span>
+                            </div>
+                            <span className="font-bold text-2xl text-gradient">
+                              {selectedMovie.rating?.toFixed(1) || 'N/A'}/10
+                            </span>
+                          </div>
+                          
+                          {selectedMovie.ratings?.map((rating, index) => (
+                            <div key={index} className="flex items-center justify-between bg-tertiary border border-primary/10 p-3 rounded-lg shadow-sm">
+                              <span className="text-muted font-medium">{rating.source}</span>
+                              <span className="font-semibold text-primary">{rating.value}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-secondary border border-primary/10 p-6 rounded-xl shadow-sm">
+                      <h3 className="font-bold text-primary mb-4 text-lg">🎭 Genres</h3>
+                      <div className="flex flex-wrap gap-3">
+                        {selectedMovie.genre?.map((g) => (
+                          <span key={g} className="bg-gradient-primary/20 text-red-400 px-4 py-2 text-sm rounded-full font-medium border border-red-400/30 hover:scale-105 transition-transform">
+                            {g}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div className="bg-secondary border border-primary/10 p-6 rounded-xl shadow-sm">
+                      <h3 className="font-bold text-primary mb-4 text-lg">🎬 Cast & Crew</h3>
+                      <div className="space-y-4">
+                        <div className="border-b border-tertiary pb-3">
+                          <span className="text-muted font-semibold block mb-2">Starring:</span>
+                          <span className="text-primary text-lg">{selectedMovie.actors?.join(', ')}</span>
+                        </div>
+                        <div>
+                          <span className="text-muted font-semibold block mb-2">Director:</span>
+                          <span className="text-primary text-lg font-medium">{selectedMovie.director}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         )}
       </main>
     </div>

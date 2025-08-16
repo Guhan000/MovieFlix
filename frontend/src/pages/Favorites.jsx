@@ -214,19 +214,19 @@ const Favorites = () => {
 
         {/* Movie Detail Modal */}
         {selectedMovie && (
-          <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-            <div className="bg-gray-800 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-primary border border-primary/20 backdrop-blur-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl">
               <div className="p-6">
                 <div className="flex justify-between items-start mb-6">
                   <div>
-                    <h2 className="text-2xl font-bold">{selectedMovie.title}</h2>
-                    <p className="text-gray-400 mt-1">
+                    <h2 className="text-2xl font-bold text-primary">{selectedMovie.title}</h2>
+                    <p className="text-secondary mt-1">
                       {selectedMovie.year} • {selectedMovie.runtime} • {selectedMovie.language}
                     </p>
                   </div>
                   <button 
                     onClick={() => setSelectedMovie(null)}
-                    className="text-gray-400 hover:text-white text-2xl p-2"
+                    className="btn-ghost p-3 text-2xl hover:scale-110 transition-all duration-200"
                   >
                     ✕
                   </button>
@@ -242,8 +242,8 @@ const Favorites = () => {
                         className="w-full rounded-lg"
                       />
                     ) : (
-                      <div className="w-full h-96 bg-gray-700 rounded-lg flex items-center justify-center">
-                        <span className="text-gray-500 text-4xl">🎬</span>
+                      <div className="w-full h-96 bg-secondary border border-primary/10 rounded-lg flex items-center justify-center shadow-md">
+                        <span className="text-muted text-4xl">🎬</span>
                       </div>
                     )}
                   </div>
@@ -251,32 +251,32 @@ const Favorites = () => {
                   {/* Details */}
                   <div className="md:col-span-2 space-y-4">
                     <div>
-                      <h3 className="font-semibold text-gray-400 mb-2">Plot</h3>
-                      <p className="text-gray-300">{selectedMovie.plot}</p>
+                      <h3 className="font-semibold text-primary mb-2">📝 Plot</h3>
+                      <p className="text-secondary leading-relaxed">{selectedMovie.plot}</p>
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <h4 className="font-semibold text-gray-400 mb-2">Details</h4>
+                        <h4 className="font-semibold text-primary mb-2">ℹ️ Details</h4>
                         <div className="space-y-2 text-sm">
                           <div className="flex justify-between">
-                            <span className="text-gray-400">Director:</span>
-                            <span className="font-medium">{selectedMovie.director}</span>
+                            <span className="text-muted">Director:</span>
+                            <span className="font-medium text-primary">{selectedMovie.director}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-gray-400">Rating:</span>
-                            <span className="font-medium">{selectedMovie.rating}</span>
+                            <span className="text-muted">Rating:</span>
+                            <span className="font-medium text-primary">⭐ {selectedMovie.rating}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-gray-400">Genre:</span>
-                            <span className="font-medium">{selectedMovie.genre?.join(', ')}</span>
+                            <span className="text-muted">Genre:</span>
+                            <span className="font-medium text-primary">{selectedMovie.genre?.join(', ')}</span>
                           </div>
                         </div>
                       </div>
 
                       <div>
-                        <h4 className="font-semibold text-gray-400 mb-2">Cast</h4>
-                        <p className="text-sm text-gray-300">{selectedMovie.actors?.join(', ')}</p>
+                        <h4 className="font-semibold text-primary mb-2">🎬 Cast</h4>
+                        <p className="text-sm text-secondary">{selectedMovie.actors?.join(', ')}</p>
                       </div>
                     </div>
                   </div>

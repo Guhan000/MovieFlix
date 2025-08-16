@@ -30,10 +30,10 @@ const Landing = () => {
       poster: 'https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_SX300.jpg'
     },
     {
-      imdbID: 'tt0167260',
-      title: 'The Lord of the Rings: The Return of the King',
-      rating: 8.9,
-      poster: 'https://m.media-amazon.com/images/M/MV5BNzA5ZDNlZWMtM2NhNS00NDJjLTk4NDItYTRmY2EwMWI5MTktXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_SX300.jpg'
+      imdbID: 'tt1375666',
+      title: 'Inception',
+      rating: 8.8,
+      poster: 'https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg'
     },
     {
       imdbID: 'tt0110912',
@@ -73,7 +73,7 @@ const Landing = () => {
   return (
     <div className="min-h-screen bg-primary">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center py-20 overflow-hidden">
+      <section className="relative min-h-screen flex items-center py-10 overflow-hidden">
         {/* Animated Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-purple-900/10 via-transparent to-red-900/10"></div>
         <div className="absolute inset-0">
