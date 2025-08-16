@@ -2,6 +2,8 @@
 
 A Netflix-inspired movie streaming application built with React.js frontend and Express.js backend, featuring user authentication and a beautiful modern UI.
 
+### Live Link - [MovieFlix](https://moviee-flixx.netlify.app/)
+
 ## 🚀 Tech Stack
 
 **Frontend:**
