@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { tokenStorage } from './tokenStorage';
 
-const API_BASE_URL = `${process.env.BACKEND_URL}/api`;
+const API_BASE_URL = `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000'}/api`;
 
 // Create axios instance with default config
 const api = axios.create({
