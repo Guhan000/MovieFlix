@@ -1,4 +1,4 @@
-# MovieFlix - Full Stack Movie Streaming App
+# MovieFlix - Full Stack Movie App
 
 A Netflix-inspired movie streaming application built with React.js frontend and Express.js backend, featuring user authentication and a beautiful modern UI.
 
@@ -20,7 +20,7 @@ A Netflix-inspired movie streaming application built with React.js frontend and 
 
 ## 📸 Features
 
-- 🎬 Beautiful Netflix-inspired landing page
+- 🎬 Beautiful landing page
 - 🔐 User authentication (Sign up, Sign in, Guest mode)
 - 📱 Responsive design
 - 🎯 Protected routes
@@ -108,29 +108,6 @@ For quick testing, you can use:
 - Email: `guest@movieflix.com`
 - Password: `guest123`
 
-## 📁 Project Structure
-
-```
-Movie-app/
-├── backend/
-│   ├── config/          # Database configuration
-│   ├── models/          # MongoDB models
-│   ├── routes/          # API routes
-│   ├── middleware/      # Custom middleware
-│   ├── app.js          # Main server file
-│   └── package.json
-├── frontend/
-│   ├── src/
-│   │   ├── components/  # Reusable components
-│   │   ├── pages/       # Page components
-│   │   ├── context/     # React Context
-│   │   ├── utils/       # Utility functions
-│   │   └── hooks/       # Custom hooks
-│   ├── public/
-│   └── package.json
-└── README.md
-```
-
 ## 🛡️ API Endpoints
 
 ### Authentication
@@ -173,18 +150,6 @@ MONGODB_URI=mongodb://localhost:27017/movieflix
 JWT_SECRET=your-super-secret-jwt-key-change-in-production
 PORT=3000
 ```
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
-
-## 📝 License
-
-This project is licensed under the MIT License.
 
 ## 🐛 Troubleshooting
 
