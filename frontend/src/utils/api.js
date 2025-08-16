@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { tokenStorage } from './tokenStorage';
 
 const API_BASE_URL = 'http://localhost:3000/api';
 
@@ -8,15 +9,25 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true, // Enable cookies for future httpOnly implementation
 });
 
 // Request interceptor to add token to requests
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
+    const token = tokenStorage.getToken();
+    
+    // Check if token is expired before using it
+    if (token && !tokenStorage.isTokenExpired()) {
       config.headers.Authorization = `Bearer ${token}`;
+    } else if (token && tokenStorage.isTokenExpired()) {
+      // Token expired, clear it
+      tokenStorage.clearAuth();
+      console.warn('🔒 Token expired, redirecting to login');
+      window.location.href = '/signin';
+      return Promise.reject(new Error('Token expired'));
     }
+    
     return config;
   },
   (error) => {
@@ -31,9 +42,14 @@ api.interceptors.response.use(
   },
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      window.location.href = '/signin';
+      console.warn('🔒 Unauthorized access, clearing auth and redirecting');
+      tokenStorage.clearAuth();
+      
+      // Only redirect if not already on auth pages
+      const currentPath = window.location.pathname;
+      if (!currentPath.includes('signin') && !currentPath.includes('signup')) {
+        window.location.href = '/signin';
+      }
     }
     return Promise.reject(error);
   }

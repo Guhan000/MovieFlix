@@ -34,6 +34,16 @@ const userSchema = new mongoose.Schema({
     enum: ['basic', 'premium', 'guest'],
     default: 'basic'
   },
+  favorites: {
+    type: [String],
+    default: [],
+    validate: {
+      validator: function(v) {
+        return v.length <= 100; // Limit to 100 favorites
+      },
+      message: 'Cannot have more than 100 favorite movies'
+    }
+  },
   createdAt: {
     type: Date,
     default: Date.now

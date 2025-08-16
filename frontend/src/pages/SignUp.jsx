@@ -1,18 +1,27 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
+import { useToast } from '../context/ToastContext';
 
 const SignUp = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { register, error } = useAuth();
+  const { theme, toggleTheme, isDark } = useTheme();
+  const { toast } = useToast();
+  
+  // Get email from location state if coming from landing page
+  const prefilledEmail = location.state?.email || '';
+  
   const [formData, setFormData] = useState({
     name: '',
-    email: '',
+    email: prefilledEmail,
     password: '',
     confirmPassword: ''
   });
   const [isLoading, setIsLoading] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
-  const { register, error } = useAuth();
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -62,150 +71,210 @@ const SignUp = () => {
     e.preventDefault();
     
     if (!validateForm()) {
+      toast.warning('Please fix the form errors before submitting');
       return;
     }
 
     setIsLoading(true);
 
-    const result = await register(formData.name, formData.email, formData.password);
-    
-    if (result.success) {
-      navigate('/dashboard');
+    try {
+      const result = await register(formData.name, formData.email, formData.password);
+      
+      if (result.success) {
+        toast.success('Account created successfully! Welcome to MovieFlix!');
+        navigate('/dashboard');
+      } else {
+        toast.error(result.message || 'Registration failed');
+      }
+    } catch (error) {
+      toast.error('Something went wrong. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
-    
-    setIsLoading(false);
   };
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center py-12">
-      <div className="absolute inset-0 bg-gradient-to-br from-red-900/20 to-black"></div>
+    <div className="min-h-screen bg-primary flex items-center justify-center relative overflow-hidden">
+      {/* Animated Background */}
+      <div className="absolute inset-0 bg-gradient-hero opacity-20"></div>
+      <div className="absolute inset-0">
+        <div className="absolute top-10 left-10 w-64 h-64 bg-gradient-primary rounded-full opacity-10 blur-3xl animate-float"></div>
+        <div className="absolute bottom-10 right-10 w-80 h-80 bg-gradient-secondary rounded-full opacity-10 blur-3xl animate-float" style={{animationDelay: '1s'}}></div>
+        <div className="absolute top-1/2 left-1/3 w-48 h-48 bg-gradient-hero rounded-full opacity-5 blur-3xl animate-float" style={{animationDelay: '2s'}}></div>
+      </div>
+      
+      {/* Theme Toggle */}
+      <button
+        onClick={toggleTheme}
+        className="absolute top-6 right-6 z-20 theme-toggle group"
+        title={`Switch to ${isDark ? 'light' : 'dark'} mode`}
+      >
+        <div className={`theme-toggle-handle flex items-center justify-center ${isDark ? 'dark' : ''}`}>
+          <span className="text-xs">
+            {isDark ? '🌙' : '☀️'}
+          </span>
+        </div>
+      </button>
       
       <div className="relative z-10 w-full max-w-md mx-auto p-6">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <Link to="/" className="text-red-600 text-4xl font-bold">MOVIEFLIX</Link>
+        {/* Header */}
+        <div className="text-center mb-12 animate-fade-in">
+          <Link to="/" className="text-gradient text-4xl font-black mb-4 inline-block hover:scale-105 transition-all duration-300 animate-glow">
+            MOVIEFLIX
+          </Link>
+          <h1 className="text-3xl font-bold text-primary mb-2">Join MovieFlix</h1>
+          <p className="text-secondary text-lg">Create your account and start your cinematic journey</p>
         </div>
 
-        {/* Sign Up Form */}
-        <div className="bg-black/75 backdrop-blur-sm p-8 rounded-lg border border-gray-800">
-          <h1 className="text-3xl font-bold text-white mb-6 text-center">Sign Up</h1>
-          
-          {error && (
-            <div className="bg-red-600/20 border border-red-600 text-red-300 px-4 py-3 rounded mb-4">
-              {error}
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Form */}
+        <div className="glass-card p-8 border-0 animate-slide-up">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
+              <label htmlFor="name" className="block text-sm font-semibold text-primary mb-3">
+                👤 Full Name
+              </label>
               <input
                 type="text"
+                id="name"
                 name="name"
-                placeholder="Full Name"
+                required
                 value={formData.name}
                 onChange={handleChange}
-                className={`input-field ${validationErrors.name ? 'border-red-500' : ''}`}
-                required
+                className={`input-field ${validationErrors.name ? 'border-red-500 bg-red-500/5' : ''}`}
+                placeholder="Enter your full name"
               />
               {validationErrors.name && (
-                <p className="text-red-400 text-sm mt-1">{validationErrors.name}</p>
+                <p className="text-red-400 text-sm mt-2 flex items-center">
+                  <span className="mr-1">⚠️</span>
+                  {validationErrors.name}
+                </p>
               )}
             </div>
 
             <div>
+              <label htmlFor="email" className="block text-sm font-semibold text-primary mb-3">
+                📧 Email Address
+              </label>
               <input
                 type="email"
+                id="email"
                 name="email"
-                placeholder="Email address"
+                required
                 value={formData.email}
                 onChange={handleChange}
-                className={`input-field ${validationErrors.email ? 'border-red-500' : ''}`}
-                required
+                className={`input-field ${validationErrors.email ? 'border-red-500 bg-red-500/5' : ''}`}
+                placeholder="Enter your email address"
               />
               {validationErrors.email && (
-                <p className="text-red-400 text-sm mt-1">{validationErrors.email}</p>
+                <p className="text-red-400 text-sm mt-2 flex items-center">
+                  <span className="mr-1">⚠️</span>
+                  {validationErrors.email}
+                </p>
               )}
             </div>
 
             <div>
+              <label htmlFor="password" className="block text-sm font-semibold text-primary mb-3">
+                🔒 Password
+              </label>
               <input
                 type="password"
+                id="password"
                 name="password"
-                placeholder="Password"
+                required
                 value={formData.password}
                 onChange={handleChange}
-                className={`input-field ${validationErrors.password ? 'border-red-500' : ''}`}
-                required
+                className={`input-field ${validationErrors.password ? 'border-red-500 bg-red-500/5' : ''}`}
+                placeholder="Create a secure password"
               />
               {validationErrors.password && (
-                <p className="text-red-400 text-sm mt-1">{validationErrors.password}</p>
+                <p className="text-red-400 text-sm mt-2 flex items-center">
+                  <span className="mr-1">⚠️</span>
+                  {validationErrors.password}
+                </p>
               )}
             </div>
 
             <div>
+              <label htmlFor="confirmPassword" className="block text-sm font-semibold text-primary mb-3">
+                🔐 Confirm Password
+              </label>
               <input
                 type="password"
+                id="confirmPassword"
                 name="confirmPassword"
-                placeholder="Confirm Password"
+                required
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className={`input-field ${validationErrors.confirmPassword ? 'border-red-500' : ''}`}
-                required
+                className={`input-field ${validationErrors.confirmPassword ? 'border-red-500 bg-red-500/5' : ''}`}
+                placeholder="Confirm your password"
               />
               {validationErrors.confirmPassword && (
-                <p className="text-red-400 text-sm mt-1">{validationErrors.confirmPassword}</p>
+                <p className="text-red-400 text-sm mt-2 flex items-center">
+                  <span className="mr-1">⚠️</span>
+                  {validationErrors.confirmPassword}
+                </p>
               )}
             </div>
+
+            {error && (
+              <div className="glass-card p-4 border border-red-500/50 bg-red-500/10 text-red-400 text-sm rounded-xl">
+                ⚠️ {error}
+              </div>
+            )}
 
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full btn-primary py-3 text-lg font-semibold disabled:opacity-50"
+              className="btn-primary w-full py-4 text-lg font-semibold"
             >
-              {isLoading ? 'Creating Account...' : 'Sign Up'}
+              {isLoading ? (
+                <span className="flex items-center justify-center space-x-2">
+                  <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></div>
+                  <span>Creating Account...</span>
+                </span>
+              ) : (
+                'Create Account ✨'
+              )}
             </button>
           </form>
 
           {/* Terms and Privacy */}
-          <div className="mt-4 text-xs text-gray-400">
+          <div className="mt-6 text-xs text-muted text-center">
             <p>
-              By signing up, you agree to our{' '}
-              <a href="#" className="hover:text-white underline">Terms of Service</a>
+              By creating an account, you agree to our{' '}
+              <a href="#" className="text-gradient font-semibold hover:scale-105 inline-block transition-all duration-300">
+                Terms of Service
+              </a>
               {' '}and{' '}
-              <a href="#" className="hover:text-white underline">Privacy Policy</a>
+              <a href="#" className="text-gradient font-semibold hover:scale-105 inline-block transition-all duration-300">
+                Privacy Policy
+              </a>
             </p>
           </div>
 
           {/* Sign In Link */}
-          <div className="mt-6 text-center text-gray-400">
-            <p>
+          <div className="text-center mt-8 animate-fade-in" style={{animationDelay: '0.3s'}}>
+            <p className="text-secondary">
               Already have an account?{' '}
-              <Link to="/signin" className="text-white hover:underline font-semibold">
-                Sign in
+              <Link 
+                to="/signin" 
+                className="text-gradient font-bold hover:scale-105 inline-block transition-all duration-300"
+              >
+                Sign in instead →
               </Link>
             </p>
           </div>
-
-          {/* Subscription Plans Preview */}
-          <div className="mt-6 p-4 bg-gray-800/50 rounded border border-gray-700">
-            <h3 className="text-sm font-semibold text-gray-300 mb-3">Choose Your Plan:</h3>
-            <div className="space-y-2 text-xs text-gray-400">
-              <div className="flex justify-between">
-                <span>Basic Plan</span>
-                <span className="text-white">$8.99/month</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Premium Plan</span>
-                <span className="text-white">$15.99/month</span>
-              </div>
-              <p className="text-yellow-400 mt-2">7-day free trial for new users!</p>
-            </div>
-          </div>
         </div>
 
-        {/* Footer */}
-        <div className="mt-8 text-center text-gray-500 text-sm">
-          <p>Questions? Call 1-844-505-2993</p>
+        {/* Back to Home */}
+        <div className="text-center mt-6 animate-fade-in" style={{animationDelay: '0.5s'}}>
+          <Link 
+            to="/" 
+            className="text-muted hover:text-secondary text-sm transition-colors inline-flex items-center space-x-1"
+          >
+            <span>← Back to Home</span>
+          </Link>
         </div>
       </div>
     </div>

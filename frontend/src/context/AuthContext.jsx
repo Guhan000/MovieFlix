@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { authAPI } from '../utils/api';
+import { tokenStorage } from '../utils/tokenStorage';
 
 const AuthContext = createContext();
 
@@ -17,13 +18,21 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Check if user is logged in on app start
-    const token = localStorage.getItem('token');
-    const userData = localStorage.getItem('user');
+    // Migrate old tokens for backwards compatibility
+    tokenStorage.migrateOldTokens();
     
-    if (token && userData) {
-      setUser(JSON.parse(userData));
+    // Check if user is logged in on app start
+    const token = tokenStorage.getToken();
+    const userData = tokenStorage.getUserData();
+    
+    if (token && userData && !tokenStorage.isTokenExpired()) {
+      setUser(userData);
+      console.log('🔐 User session restored');
+    } else if (token && tokenStorage.isTokenExpired()) {
+      console.warn('🔒 Token expired, clearing session');
+      tokenStorage.clearAuth();
     }
+    
     setLoading(false);
   }, []);
 
@@ -35,14 +44,18 @@ export const AuthProvider = ({ children }) => {
       const response = await authAPI.login({ email, password });
       const { token, user: userData } = response.data;
       
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(userData));
-      setUser(userData);
-      
-      return { success: true };
+      // Use enhanced token storage
+      if (tokenStorage.setToken(token) && tokenStorage.setUserData(userData)) {
+        setUser(userData);
+        console.log('🔐 Login successful, session secured');
+        return { success: true };
+      } else {
+        throw new Error('Failed to secure login session');
+      }
     } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Login failed';
+      const errorMessage = error.response?.data?.message || error.message || 'Login failed';
       setError(errorMessage);
+      console.error('🔒 Login failed:', errorMessage);
       return { success: false, error: errorMessage };
     } finally {
       setLoading(false);
@@ -57,14 +70,18 @@ export const AuthProvider = ({ children }) => {
       const response = await authAPI.register({ name, email, password });
       const { token, user: userData } = response.data;
       
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(userData));
-      setUser(userData);
-      
-      return { success: true };
+      // Use enhanced token storage
+      if (tokenStorage.setToken(token) && tokenStorage.setUserData(userData)) {
+        setUser(userData);
+        console.log('🔐 Registration successful, session secured');
+        return { success: true };
+      } else {
+        throw new Error('Failed to secure registration session');
+      }
     } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Registration failed';
+      const errorMessage = error.response?.data?.message || error.message || 'Registration failed';
       setError(errorMessage);
+      console.error('🔒 Registration failed:', errorMessage);
       return { success: false, error: errorMessage };
     } finally {
       setLoading(false);
@@ -79,14 +96,18 @@ export const AuthProvider = ({ children }) => {
       const response = await authAPI.guestLogin();
       const { token, user: userData } = response.data;
       
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(userData));
-      setUser(userData);
-      
-      return { success: true };
+      // Use enhanced token storage
+      if (tokenStorage.setToken(token) && tokenStorage.setUserData(userData)) {
+        setUser(userData);
+        console.log('🔐 Guest login successful, session secured');
+        return { success: true };
+      } else {
+        throw new Error('Failed to secure guest session');
+      }
     } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Guest login failed';
+      const errorMessage = error.response?.data?.message || error.message || 'Guest login failed';
       setError(errorMessage);
+      console.error('🔒 Guest login failed:', errorMessage);
       return { success: false, error: errorMessage };
     } finally {
       setLoading(false);
@@ -94,10 +115,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    tokenStorage.clearAuth();
     setUser(null);
     setError(null);
+    console.log('🔐 User logged out, session cleared');
   };
 
   const value = {

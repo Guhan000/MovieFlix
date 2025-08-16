@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
+import { useToast } from '../context/ToastContext';
 
 const SignIn = () => {
   const [formData, setFormData] = useState({
@@ -9,6 +11,8 @@ const SignIn = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const { login, guestLogin, error } = useAuth();
+  const { theme, toggleTheme, isDark } = useTheme();
+  const { toast } = useToast();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -22,129 +26,188 @@ const SignIn = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    const result = await login(formData.email, formData.password);
-    
-    if (result.success) {
-      navigate('/dashboard'); // We'll create this later
+    try {
+      const result = await login(formData.email, formData.password);
+      
+      if (result.success) {
+        toast.success('Welcome back!');
+        navigate('/dashboard');
+      } else {
+        toast.error(result.message || 'Sign in failed');
+      }
+    } catch (error) {
+      toast.error('Something went wrong. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
-    
-    setIsLoading(false);
   };
 
   const handleGuestLogin = async () => {
     setIsLoading(true);
-    const result = await guestLogin();
     
-    if (result.success) {
-      navigate('/dashboard');
+    try {
+      const result = await guestLogin();
+      
+      if (result.success) {
+        toast.success('Signed in as guest!');
+        navigate('/dashboard');
+      } else {
+        toast.error(result.message || 'Guest login failed');
+      }
+    } catch (error) {
+      toast.error('Something went wrong. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
-    
-    setIsLoading(false);
   };
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center">
-      <div className="absolute inset-0 bg-gradient-to-br from-red-900/20 to-black"></div>
+    <div className="min-h-screen bg-primary flex items-center justify-center relative overflow-hidden">
+      {/* Animated Background */}
+      <div className="absolute inset-0 bg-gradient-hero opacity-20"></div>
+      <div className="absolute inset-0">
+        <div className="absolute top-10 left-10 w-64 h-64 bg-gradient-primary rounded-full opacity-10 blur-3xl animate-float"></div>
+        <div className="absolute bottom-10 right-10 w-80 h-80 bg-gradient-secondary rounded-full opacity-10 blur-3xl animate-float" style={{animationDelay: '1s'}}></div>
+        <div className="absolute top-1/2 left-1/3 w-48 h-48 bg-gradient-hero rounded-full opacity-5 blur-3xl animate-float" style={{animationDelay: '2s'}}></div>
+      </div>
+      
+      {/* Theme Toggle */}
+      <button
+        onClick={toggleTheme}
+        className={`absolute top-6 right-6 z-20 theme-toggle group ${isDark ? 'dark' : ''}`}
+        title={`Switch to ${isDark ? 'light' : 'dark'} mode`}
+      >
+        <div className="theme-toggle-handle">
+          <span className="text-xs">
+            {isDark ? '🌙' : '☀️'}
+          </span>
+        </div>
+      </button>
       
       <div className="relative z-10 w-full max-w-md mx-auto p-6">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <Link to="/" className="text-red-600 text-4xl font-bold">MOVIEFLIX</Link>
+        {/* Header */}
+        <div className="text-center mb-12 animate-fade-in">
+          <Link to="/" className="text-gradient text-4xl font-black mb-4 inline-block hover:scale-105 transition-all duration-300 animate-glow">
+            MOVIEFLIX
+          </Link>
+          <h1 className="text-3xl font-bold text-primary mb-2">Welcome Back</h1>
+          <p className="text-secondary text-lg">Sign in to your account to continue exploring</p>
         </div>
 
-        {/* Sign In Form */}
-        <div className="bg-black/75 backdrop-blur-sm p-8 rounded-lg border border-gray-800">
-          <h1 className="text-3xl font-bold text-white mb-6 text-center">Sign In</h1>
-          
-          {error && (
-            <div className="bg-red-600/20 border border-red-600 text-red-300 px-4 py-3 rounded mb-4">
-              {error}
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Form */}
+        <div className="glass-card p-8 border-0 animate-slide-up">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
+              <label htmlFor="email" className="block text-sm font-semibold text-primary mb-3">
+                📧 Email Address
+              </label>
               <input
                 type="email"
+                id="email"
                 name="email"
-                placeholder="Email address"
+                required
                 value={formData.email}
                 onChange={handleChange}
                 className="input-field"
-                required
+                placeholder="Enter your email address"
               />
             </div>
 
             <div>
+              <label htmlFor="password" className="block text-sm font-semibold text-primary mb-3">
+                🔒 Password
+              </label>
               <input
                 type="password"
+                id="password"
                 name="password"
-                placeholder="Password"
+                required
                 value={formData.password}
                 onChange={handleChange}
                 className="input-field"
-                required
+                placeholder="Enter your password"
               />
             </div>
+
+            {error && (
+              <div className="glass-card p-4 border border-red-500/50 bg-red-500/10 text-red-400 text-sm rounded-xl">
+                ⚠️ {error}
+              </div>
+            )}
 
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full btn-primary py-3 text-lg font-semibold disabled:opacity-50"
+              className="btn-primary w-full py-4 text-lg font-semibold"
             >
-              {isLoading ? 'Signing In...' : 'Sign In'}
+              {isLoading ? (
+                <span className="flex items-center justify-center space-x-2">
+                  <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></div>
+                  <span>Signing in...</span>
+                </span>
+              ) : (
+                'Sign In ✨'
+              )}
             </button>
           </form>
 
-          {/* Guest Login */}
-          <div className="mt-4">
-            <button
-              onClick={handleGuestLogin}
-              disabled={isLoading}
-              className="w-full btn-secondary py-3 text-lg font-semibold disabled:opacity-50"
-            >
-              {isLoading ? 'Loading...' : 'Continue as Guest'}
-            </button>
+          {/* Divider */}
+          <div className="my-8 flex items-center">
+            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-border-primary to-transparent" style={{ background: 'linear-gradient(90deg, transparent, rgb(var(--border-primary)), transparent)' }}></div>
+            <span className="px-4 text-muted text-sm font-medium">OR</span>
+            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-border-primary to-transparent" style={{ background: 'linear-gradient(90deg, transparent, rgb(var(--border-primary)), transparent)' }}></div>
           </div>
 
-          {/* Additional Options */}
-          <div className="mt-6 text-center text-gray-400">
-            <div className="flex items-center justify-between text-sm mb-4">
-              <label className="flex items-center">
-                <input type="checkbox" className="mr-2 bg-gray-700 border-gray-600" />
-                Remember me
-              </label>
-              <a href="#" className="hover:text-white">Need help?</a>
+          {/* Guest Login */}
+          <button
+            onClick={handleGuestLogin}
+            disabled={isLoading}
+            className="btn-ghost w-full py-4 text-lg font-semibold"
+          >
+            {isLoading ? (
+              <span className="flex items-center justify-center space-x-2">
+                <div className="animate-spin w-5 h-5 border-2 border-primary border-t-transparent rounded-full"></div>
+                <span>Signing in...</span>
+              </span>
+            ) : (
+              '🎬 Continue as Guest'
+            )}
+          </button>
+
+          {/* Demo Credentials */}
+          <div className="mt-8 glass-card p-4 border-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5">
+            <h3 className="text-sm font-bold text-primary mb-3 flex items-center">
+              🎭 Demo Credentials
+            </h3>
+            <div className="text-sm text-secondary space-y-1">
+              <p><span className="font-medium">Email:</span> guest@movieflix.com</p>
+              <p><span className="font-medium">Password:</span> guest123</p>
+              <p className="text-gradient font-semibold mt-2">Or simply use the "Continue as Guest" button</p>
             </div>
           </div>
 
           {/* Sign Up Link */}
-          <div className="mt-6 text-center text-gray-400">
-            <p>
+          <div className="text-center mt-8 animate-fade-in" style={{animationDelay: '0.3s'}}>
+            <p className="text-secondary">
               New to MovieFlix?{' '}
-              <Link to="/signup" className="text-white hover:underline font-semibold">
-                Sign up now
+              <Link 
+                to="/signup" 
+                className="text-gradient font-bold hover:scale-105 inline-block transition-all duration-300"
+              >
+                Sign up now →
               </Link>
             </p>
           </div>
-
-          {/* Demo Credentials */}
-          <div className="mt-6 p-4 bg-gray-800/50 rounded border border-gray-700">
-            <h3 className="text-sm font-semibold text-gray-300 mb-2">Demo Credentials:</h3>
-            <div className="text-xs text-gray-400 space-y-1">
-              <p><strong>Email:</strong> guest@movieflix.com</p>
-              <p><strong>Password:</strong> guest123</p>
-              <p className="text-yellow-400 mt-2">Or use "Continue as Guest" button</p>
-            </div>
-          </div>
         </div>
 
-        {/* Footer */}
-        <div className="mt-8 text-center text-gray-500 text-sm">
-          <p>This page is protected by Google reCAPTCHA to ensure you're not a bot.</p>
-          <div className="mt-2">
-            <a href="#" className="hover:underline">Learn more</a>
-          </div>
+        {/* Back to Home */}
+        <div className="text-center mt-6 animate-fade-in" style={{animationDelay: '0.5s'}}>
+          <Link 
+            to="/" 
+            className="text-muted hover:text-secondary text-sm transition-colors inline-flex items-center space-x-1"
+          >
+            <span>← Back to Home</span>
+          </Link>
         </div>
       </div>
     </div>
