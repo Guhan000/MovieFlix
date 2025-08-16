@@ -33,8 +33,8 @@ A Netflix-inspired movie streaming application built with React.js frontend and 
 
 ### Prerequisites
 - Node.js (v18 or higher)
-- MongoDB (local or Atlas)
-- npm or yarn
+- MongoDB (Atlas)
+- npm
 
 ### 1. Clone the repository
 ```bash
@@ -49,9 +49,6 @@ cd backend
 
 # Install dependencies
 npm install
-
-# Create environment file
-cp .env.example .env
 
 # Update .env with your MongoDB URI
 # MONGODB_URI=mongodb://localhost:27017/movieflix
@@ -76,8 +73,7 @@ npm run dev
 
 ### 4. Database Setup
 
-Make sure MongoDB is running:
-- **Local MongoDB**: Start your local MongoDB service
+MongoDB:
 - **MongoDB Atlas**: Update the connection string in `.env`
 
 ## 🚦 Running the Application
@@ -125,6 +121,9 @@ For quick testing, you can use:
 - **Sign In**: User authentication with guest option
 - **Sign Up**: User registration with validation
 - **Dashboard**: Protected user dashboard with movie grid
+- **Movies (Search)**: Protected Movie search page with multiple options
+- **Statistics**: Protected Analytics page for recently searched items
+- **Favorites**: Protected User specific favorites list page
 
 ### Features
 - Responsive design for mobile/desktop
@@ -136,13 +135,11 @@ For quick testing, you can use:
 ## 🚀 Deployment
 
 ### Backend Deployment
-1. Set up environment variables on your hosting platform
-2. Configure MongoDB connection
-3. Deploy to platforms like Heroku, Railway, or Vercel
+1. MOngoDB
+2. Render
 
 ### Frontend Deployment
-1. Build the project: `npm run build`
-2. Deploy to platforms like Netlify, Vercel, or GitHub Pages
+1. Netlify
 
 ## 🔧 Environment Variables
 
