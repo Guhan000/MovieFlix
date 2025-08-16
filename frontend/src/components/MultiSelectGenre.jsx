@@ -69,7 +69,7 @@ const MultiSelectGenre = ({ selectedGenres, onGenresChange, availableGenres = []
       </button>
 
       {isOpen && (
-        <div className="relative w-full mt-1 glass-card border-0 rounded-xl shadow-xl max-h-64 overflow-hidden" style={{ backdropFilter: 'blur(20px)', backgroundColor: 'rgb(var(--bg-primary) / 0.95)' }}>
+        <div className="absolute z-[9999] w-full mt-1 glass-card border-0 rounded-xl shadow-xl max-h-64 overflow-hidden" style={{ backdropFilter: 'blur(20px)', backgroundColor: 'rgb(var(--bg-primary) / 0.95)' }}>
           {/* Search Input */}
           <div className="p-4" style={{ borderBottom: '1px solid rgb(var(--border-primary))' }}>
             <input

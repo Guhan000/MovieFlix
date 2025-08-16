@@ -72,18 +72,31 @@ const Header = () => {
 
           {/* Right Side Controls */}
           <div className="flex items-center space-x-4 animate-fade-in">
-            {/* Theme Toggle */}
-            <button
-              onClick={toggleTheme}
-              className={`theme-toggle group ${isDark ? 'dark' : ''}`}
-              title={`Switch to ${isDark ? 'light' : 'dark'} mode`}
-            >
-              <div className="theme-toggle-handle">
-                <span className="text-xs">
-                  {isDark ? '🌙' : '☀️'}
+            {/* Enhanced Theme Toggle */}
+            <div className="flex items-center space-x-3">
+              <span className="text-sm text-muted font-medium hidden sm:block">
+                {isDark ? 'Dark' : 'Light'}
+              </span>
+              <button
+                onClick={toggleTheme}
+                className={`theme-toggle group ${isDark ? 'dark' : ''}`}
+                title={`Switch to ${isDark ? 'light' : 'dark'} mode`}
+                aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
+              >
+                <div className="theme-toggle-handle">
+                  <span className="text-xs transition-all duration-300 transform group-hover:scale-110">
+                    {isDark ? '🌙' : '☀️'}
+                  </span>
+                </div>
+                {/* Toggle Track Labels */}
+                <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-xs text-muted opacity-60">
+                  ☀️
                 </span>
-              </div>
-            </button>
+                <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs text-muted opacity-60">
+                  🌙
+                </span>
+              </button>
+            </div>
 
             {isAuthenticated ? (
               <>

@@ -11,11 +11,11 @@ export const useTheme = () => {
 };
 
 export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState('dark');
 
   useEffect(() => {
-    // Check for saved theme preference or default to 'light'
-    const savedTheme = localStorage.getItem('movieflix-theme') || 'light';
+    // Check for saved theme preference or default to 'dark'
+    const savedTheme = localStorage.getItem('movieflix-theme') || 'dark';
     setTheme(savedTheme);
     applyTheme(savedTheme);
   }, []);
