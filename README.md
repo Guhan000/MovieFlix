@@ -182,7 +182,3 @@ PORT=3000
 - Payment integration
 - Admin dashboard
 - Movie reviews and ratings
-
----
-
-Built with ❤️ by [Your Name]
