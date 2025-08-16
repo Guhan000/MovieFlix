@@ -94,7 +94,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen bg-primary flex items-center justify-center relative overflow-hidden">
+    <div className="min-h-screen pt-10 pb-10  bg-primary flex items-center justify-center relative overflow-hidden">
       {/* Animated Background */}
       <div className="absolute inset-0 bg-gradient-hero opacity-20"></div>
       <div className="absolute inset-0">
@@ -103,34 +103,47 @@ const SignUp = () => {
         <div className="absolute top-1/2 left-1/3 w-48 h-48 bg-gradient-hero rounded-full opacity-5 blur-3xl animate-float" style={{animationDelay: '2s'}}></div>
       </div>
       
-      {/* Theme Toggle */}
-      <button
-        onClick={toggleTheme}
-        className="absolute top-6 right-6 z-20 theme-toggle group"
-        title={`Switch to ${isDark ? 'light' : 'dark'} mode`}
-      >
-        <div className={`theme-toggle-handle flex items-center justify-center ${isDark ? 'dark' : ''}`}>
-          <span className="text-xs">
-            {isDark ? '🌙' : '☀️'}
+      {/* Enhanced Theme Toggle */}
+      <div className="absolute top-6 right-6 z-20 flex items-center space-x-3">
+        <span className="text-sm text-muted font-medium hidden sm:block">
+          {isDark ? 'Dark' : 'Light'}
+        </span>
+        <button
+          onClick={toggleTheme}
+          className={`theme-toggle group ${isDark ? 'dark' : ''}`}
+          title={`Switch to ${isDark ? 'light' : 'dark'} mode`}
+          aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
+        >
+          <div className="theme-toggle-handle">
+            <span className="text-xs transition-all duration-300 transform group-hover:scale-110">
+              {isDark ? '🌙' : '☀️'}
+            </span>
+          </div>
+          {/* Toggle Track Labels */}
+          <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-xs text-muted opacity-60">
+            ☀️
           </span>
-        </div>
-      </button>
+          <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs text-muted opacity-60">
+            🌙
+          </span>
+        </button>
+      </div>
       
-      <div className="relative z-10 w-full max-w-md mx-auto p-6">
+      <div className="relative z-10 w-full max-w-lg mx-auto px-4 sm:px-6">
         {/* Header */}
-        <div className="text-center mb-12 animate-fade-in">
-          <Link to="/" className="text-gradient text-4xl font-black mb-4 inline-block hover:scale-105 transition-all duration-300 animate-glow">
+        <div className="text-center mb-8 animate-fade-in">
+          <Link to="/" className="text-gradient text-3xl sm:text-4xl font-black mb-3 inline-block hover:scale-105 transition-all duration-300 animate-glow">
             MOVIEFLIX
           </Link>
-          <h1 className="text-3xl font-bold text-primary mb-2">Join MovieFlix</h1>
-          <p className="text-secondary text-lg">Create your account and start your cinematic journey</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-primary mb-2">Join MovieFlix</h1>
+          <p className="text-secondary text-base sm:text-lg">Create your account and start your cinematic journey</p>
         </div>
 
         {/* Form */}
-        <div className="glass-card p-8 border-0 animate-slide-up">
-          <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="glass-card p-6 sm:p-8 border-0 animate-slide-up" style={{ backdropFilter: 'blur(20px)', backgroundColor: 'rgb(var(--bg-primary) / 0.95)' }}>
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label htmlFor="name" className="block text-sm font-semibold text-primary mb-3">
+              <label htmlFor="name" className="block text-sm font-semibold text-primary mb-2">
                 👤 Full Name
               </label>
               <input
@@ -140,11 +153,11 @@ const SignUp = () => {
                 required
                 value={formData.name}
                 onChange={handleChange}
-                className={`input-field ${validationErrors.name ? 'border-red-500 bg-red-500/5' : ''}`}
+                className={`input-field ${validationErrors.name ? 'border-red-500/50 bg-red-500/5' : ''}`}
                 placeholder="Enter your full name"
               />
               {validationErrors.name && (
-                <p className="text-red-400 text-sm mt-2 flex items-center">
+                <p className="text-red-400 text-xs mt-1 flex items-center">
                   <span className="mr-1">⚠️</span>
                   {validationErrors.name}
                 </p>
@@ -152,7 +165,7 @@ const SignUp = () => {
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-semibold text-primary mb-3">
+              <label htmlFor="email" className="block text-sm font-semibold text-primary mb-2">
                 📧 Email Address
               </label>
               <input
@@ -162,11 +175,11 @@ const SignUp = () => {
                 required
                 value={formData.email}
                 onChange={handleChange}
-                className={`input-field ${validationErrors.email ? 'border-red-500 bg-red-500/5' : ''}`}
+                className={`input-field ${validationErrors.email ? 'border-red-500/50 bg-red-500/5' : ''}`}
                 placeholder="Enter your email address"
               />
               {validationErrors.email && (
-                <p className="text-red-400 text-sm mt-2 flex items-center">
+                <p className="text-red-400 text-xs mt-1 flex items-center">
                   <span className="mr-1">⚠️</span>
                   {validationErrors.email}
                 </p>
@@ -174,7 +187,7 @@ const SignUp = () => {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-semibold text-primary mb-3">
+              <label htmlFor="password" className="block text-sm font-semibold text-primary mb-2">
                 🔒 Password
               </label>
               <input
@@ -184,11 +197,11 @@ const SignUp = () => {
                 required
                 value={formData.password}
                 onChange={handleChange}
-                className={`input-field ${validationErrors.password ? 'border-red-500 bg-red-500/5' : ''}`}
+                className={`input-field ${validationErrors.password ? 'border-red-500/50 bg-red-500/5' : ''}`}
                 placeholder="Create a secure password"
               />
               {validationErrors.password && (
-                <p className="text-red-400 text-sm mt-2 flex items-center">
+                <p className="text-red-400 text-xs mt-1 flex items-center">
                   <span className="mr-1">⚠️</span>
                   {validationErrors.password}
                 </p>
@@ -196,7 +209,7 @@ const SignUp = () => {
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-semibold text-primary mb-3">
+              <label htmlFor="confirmPassword" className="block text-sm font-semibold text-primary mb-2">
                 🔐 Confirm Password
               </label>
               <input
@@ -206,11 +219,11 @@ const SignUp = () => {
                 required
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className={`input-field ${validationErrors.confirmPassword ? 'border-red-500 bg-red-500/5' : ''}`}
+                className={`input-field ${validationErrors.confirmPassword ? 'border-red-500/50 bg-red-500/5' : ''}`}
                 placeholder="Confirm your password"
               />
               {validationErrors.confirmPassword && (
-                <p className="text-red-400 text-sm mt-2 flex items-center">
+                <p className="text-red-400 text-xs mt-1 flex items-center">
                   <span className="mr-1">⚠️</span>
                   {validationErrors.confirmPassword}
                 </p>
@@ -218,7 +231,7 @@ const SignUp = () => {
             </div>
 
             {error && (
-              <div className="glass-card p-4 border border-red-500/50 bg-red-500/10 text-red-400 text-sm rounded-xl">
+              <div className="bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-lg p-3 backdrop-blur-sm">
                 ⚠️ {error}
               </div>
             )}
@@ -226,7 +239,7 @@ const SignUp = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="btn-primary w-full py-4 text-lg font-semibold"
+              className="btn-primary w-full py-3 text-base font-semibold mt-6"
             >
               {isLoading ? (
                 <span className="flex items-center justify-center space-x-2">
@@ -240,7 +253,7 @@ const SignUp = () => {
           </form>
 
           {/* Terms and Privacy */}
-          <div className="mt-6 text-xs text-muted text-center">
+          <div className="mt-5 text-xs text-muted text-center">
             <p>
               By creating an account, you agree to our{' '}
               <a href="#" className="text-gradient font-semibold hover:scale-105 inline-block transition-all duration-300">
@@ -254,8 +267,8 @@ const SignUp = () => {
           </div>
 
           {/* Sign In Link */}
-          <div className="text-center mt-8 animate-fade-in" style={{animationDelay: '0.3s'}}>
-            <p className="text-secondary">
+          <div className="text-center mt-6 animate-fade-in" style={{animationDelay: '0.3s'}}>
+            <p className="text-secondary text-sm">
               Already have an account?{' '}
               <Link 
                 to="/signin" 
@@ -268,7 +281,7 @@ const SignUp = () => {
         </div>
 
         {/* Back to Home */}
-        <div className="text-center mt-6 animate-fade-in" style={{animationDelay: '0.5s'}}>
+        <div className="text-center mt-4 animate-fade-in" style={{animationDelay: '0.5s'}}>
           <Link 
             to="/" 
             className="text-muted hover:text-secondary text-sm transition-colors inline-flex items-center space-x-1"
