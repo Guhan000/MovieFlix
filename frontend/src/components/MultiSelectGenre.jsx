@@ -69,7 +69,7 @@ const MultiSelectGenre = ({ selectedGenres, onGenresChange, availableGenres = []
       </button>
 
       {isOpen && (
-        <div className="absolute z-50 w-full mt-1 glass-card border-0 rounded-xl shadow-xl max-h-64 overflow-hidden">
+        <div className="relative w-full mt-1 glass-card border-0 rounded-xl shadow-xl max-h-64 overflow-hidden" style={{ backdropFilter: 'blur(20px)', backgroundColor: 'rgb(var(--bg-primary) / 0.95)' }}>
           {/* Search Input */}
           <div className="p-4" style={{ borderBottom: '1px solid rgb(var(--border-primary))' }}>
             <input
@@ -99,7 +99,7 @@ const MultiSelectGenre = ({ selectedGenres, onGenresChange, availableGenres = []
             {filteredGenres.map((genre) => (
               <label
                 key={genre}
-                className="flex items-center px-4 py-3 hover:bg-tertiary cursor-pointer transition-colors"
+                className="flex items-center px-4 py-3 hover:bg-secondary/50 cursor-pointer transition-colors"
               >
                 <input
                   type="checkbox"

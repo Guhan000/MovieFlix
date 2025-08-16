@@ -13,8 +13,6 @@ class CacheManager {
   initialize() {
     if (this.isScheduled) return;
 
-    console.log('📅 Initializing cache management scheduler...');
-
     // Schedule cache cleanup every 24 hours at 2 AM
     cron.schedule('0 2 * * *', async () => {
       console.log('🧹 Running scheduled cache cleanup...');
@@ -33,7 +31,6 @@ class CacheManager {
     }, 5000);
 
     this.isScheduled = true;
-    console.log('✅ Cache management scheduler initialized');
   }
 
   /**
@@ -63,13 +60,11 @@ class CacheManager {
       const startTime = Date.now();
       const deletedCount = await movieAPIService.cleanExpiredCache();
       const duration = Date.now() - startTime;
-
-      console.log(`🧹 Scheduled cleanup completed: ${deletedCount} entries deleted in ${duration}ms`);
       
       // Log statistics after cleanup
       await this.logCacheStatistics();
     } catch (error) {
-      console.error('❌ Scheduled cache cleanup failed:', error.message);
+      console.error(error.message);
     }
   }
 
@@ -120,7 +115,6 @@ class CacheManager {
         cacheEfficiency: totalMovies > 0 ? ((activeMovies / totalMovies) * 100).toFixed(2) : 0
       };
     } catch (error) {
-      console.error('❌ Failed to get cache statistics:', error.message);
       return null;
     }
   }
@@ -133,16 +127,9 @@ class CacheManager {
       const stats = await this.getCacheStatistics();
       
       if (stats) {
-        console.log('📊 Cache Statistics:');
-        console.log(`   Total Movies: ${stats.totalMovies}`);
-        console.log(`   Active Movies: ${stats.activeMovies}`);
-        console.log(`   Expired Movies: ${stats.expiredMovies}`);
-        console.log(`   Cache Efficiency: ${stats.cacheEfficiency}%`);
-        console.log(`   Recent Additions (24h): ${stats.recentMovies}`);
-        console.log(`   Top Genres: ${stats.genreDistribution.slice(0, 3).map(g => `${g._id} (${g.count})`).join(', ')}`);
       }
     } catch (error) {
-      console.error('❌ Failed to log cache statistics:', error.message);
+      console.error(error.message);
     }
   }
 
@@ -163,11 +150,7 @@ class CacheManager {
         totalSearches: { $lte: 1 }
       });
 
-      const duration = Date.now() - startTime;
-
-      console.log(`✅ Cache optimization completed in ${duration}ms:`);
-      console.log(`   Expired entries removed: ${expiredDeleted}`);
-      console.log(`   Old unused entries removed: ${oldMoviesResult.deletedCount}`);
+      const duration = Date.now() - startTime;;
 
       return {
         success: true,
@@ -176,7 +159,6 @@ class CacheManager {
         duration
       };
     } catch (error) {
-      console.error('❌ Cache optimization failed:', error.message);
       return {
         success: false,
         error: error.message
@@ -193,8 +175,6 @@ class CacheManager {
       'lord of the rings', 'marvel', 'disney', 'pixar', 'james bond'
     ];
 
-    console.log('🔄 Preloading popular movie searches...');
-
     for (const search of popularSearches) {
       try {
         await movieAPIService.searchAndCacheMovies(search, { forceRefresh: false });
@@ -203,11 +183,8 @@ class CacheManager {
         // Add delay to respect API limits
         await new Promise(resolve => setTimeout(resolve, 2000));
       } catch (error) {
-        console.error(`❌ Failed to preload ${search}:`, error.message);
       }
     }
-
-    console.log('✅ Popular movies preloading completed');
   }
 
   /**

@@ -270,7 +270,7 @@ const MovieDashboard = () => {
             
             {/* Genre Filter Row */}
             <div className="grid md:grid-cols-12 gap-4 mb-4">
-              <div className="md:col-span-6">
+              <div className="md:col-span-6 relative">
                 <label className="block text-sm font-medium text-primary mb-2">
                   🎭 Filter by Genres (Multi-select)
                 </label>
@@ -336,52 +336,61 @@ const MovieDashboard = () => {
 
           </div>
 
-          {/* Recently Searched Movies */}
-           {/* {(!movies.length && !loading && recentMovies.length > 0) && (
-            <div className="mb-8">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-bold text-white">🔍 Recently Searched Movies</h3>
-                <p className="text-gray-400 text-sm">{recentMovies.length} movies</p>
-              </div>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-                {recentMovies.map((movie) => (
-                  <div 
-                    key={movie.imdbID}
-                    className="bg-gray-800 rounded-lg overflow-hidden hover:bg-gray-700 transition-colors cursor-pointer group"
-                    onClick={() => getMovieDetails(movie.imdbID)}
-                  >
-                    <div className="aspect-w-2 aspect-h-3 relative">
-                      {/* Favorite Heart Button */}
-                      {/* <div className="absolute top-2 left-2 z-10">
-                        <FavoriteButton movie={movie} size="w-4 h-4" />
-                      </div>
-                      
-                      {movie.poster ? (
-                        <img 
-                          src={movie.poster} 
-                          alt={movie.title}
-                          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-200"
-                        />
-                      ) : (
-                        <div className="w-full h-48 bg-gray-700 flex items-center justify-center">
-                          <span className="text-gray-500">🎬</span>
-                        </div>
-                      )}
+          {/* Loading State */}
+          {loading && (
+            <div className="mb-8 animate-fade-in">
+              <div className="bg-secondary border border-primary/10 rounded-2xl p-8 shadow-sm">
+                <div className="flex flex-col items-center justify-center space-y-6">
+                  {/* Animated Search Icon */}
+                  <div className="relative">
+                    <div className="animate-spin w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full"></div>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="text-2xl animate-pulse">🔍</div>
                     </div>
-                    <div className="p-3">
-                      <h4 className="text-sm font-semibold text-white mb-1 truncate">{movie.title}</h4>
-                      <div className="flex items-center justify-between text-xs text-gray-400">
-                        <span>{movie.year}</span>
-                        {movie.rating && (
-                          <span className="text-yellow-400">⭐ {movie.rating}</span>
-                        )}
+                  </div>
+                  
+                  {/* Loading Text */}
+                  <div className="text-center">
+                    <h3 className="text-xl font-bold text-primary mb-2 animate-pulse">
+                      Searching Movies...
+                    </h3>
+                    <p className="text-secondary text-sm">
+                      {searchTerm ? `Looking for "${searchTerm}"` : 'Discovering great movies for you'}
+                    </p>
+                  </div>
+                  
+                  {/* Loading Progress Bars */}
+                  <div className="w-full max-w-md space-y-2">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-3 h-3 bg-primary rounded-full animate-bounce"></div>
+                      <div className="flex-1 h-2 bg-tertiary rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-primary rounded-full animate-loading-bar"></div>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <div className="w-3 h-3 bg-secondary/50 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                      <div className="flex-1 h-2 bg-tertiary rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-secondary rounded-full animate-loading-bar" style={{animationDelay: '0.3s'}}></div>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <div className="w-3 h-3 bg-secondary/30 rounded-full animate-bounce" style={{animationDelay: '0.4s'}}></div>
+                      <div className="flex-1 h-2 bg-tertiary rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full animate-loading-bar" style={{animationDelay: '0.6s'}}></div>
                       </div>
                     </div>
                   </div>
-                ))}
+                  
+                  {/* Fun Facts */}
+                  <div className="text-center max-w-lg">
+                    <p className="text-muted text-xs italic animate-pulse" style={{animationDelay: '1s'}}>
+                      💡 Tip: Use our genre filters and rating options to find exactly what you're looking for!
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
-          )} */}
+          )}
           
 
 

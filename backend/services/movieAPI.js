@@ -3,12 +3,10 @@ const Movie = require('../models/Movie');
 
 class MovieAPIService {
   constructor() {
-    // Free OMDb API key (you can get your own from http://www.omdbapi.com/apikey.aspx)
-    this.OMDB_API_KEY = process.env.OMDB_API_KEY || 'b8eab4c8'; // Demo key
+    this.OMDB_API_KEY = process.env.OMDB_API_KEY;
     this.OMDB_BASE_URL = 'http://www.omdbapi.com/';
-    this.REQUEST_DELAY = 1000; // 1 second delay between requests (API limit)
+    this.REQUEST_DELAY = 1000;
     
-    // Debug API key status
     if (!process.env.OMDB_API_KEY) {
       console.warn('Using demo OMDb API key. Get your free key from: http://www.omdbapi.com/apikey.aspx');
     }

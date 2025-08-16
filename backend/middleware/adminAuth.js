@@ -69,7 +69,6 @@ const createDefaultAdmin = async () => {
       });
       
       await adminUser.save();
-      console.log('🔑 Default admin user created: admin@movieflix.com / admin123');
     }
   } catch (error) {
     console.error('Failed to create default admin:', error.message);

@@ -66,20 +66,11 @@ app.use((req, res) => {
 
 app.listen(PORT, async (error) => {
   if (!error) {
-    console.log(`MovieFlix API server running on port ${PORT}`);
-    console.log(`Health check: http://localhost:${PORT}/api/health`);
-    console.log(`Movie search: http://localhost:${PORT}/api/movies/search?search=batman`);
-    console.log(`Analytics: http://localhost:${PORT}/api/movies/analytics/dashboard`);
-    
     // Initialize services after server starts
     try {
       // Create default admin user if needed
       await createDefaultAdmin();
-      
-      // Initialize cache management
       cacheManager.initialize();
-      
-      console.log('All services initialized successfully');
     } catch (initError) {
       console.error('Service initialization error:', initError.message);
     }
